@@ -10,7 +10,7 @@ def jpgSearch():
 	sector = 512 # used to designate sectors as 512 bytes, for easier reading since it signified chunks
 	imagectr = 0 # counter used to iterate the number of recovered imaes
 	maxSize = 10000000 # arbitrary value to designate the maximum file size of a recovered image so that if it just so happens that a header was found
-	drive = open("\\\\.\F:", 'rb')
+	drive = open("\\\\.\E:", 'rb')
 	while nCtr < nMax:
 		try:
 			drive.seek(nCtr * sector) # iterates per sector
@@ -44,6 +44,8 @@ def jpgSearch():
 		nCtr += 1
 
 #async def main:
+def main():
+	jpgSearch()
 		
 if __name__ == "__main__":
 	main()
