@@ -4,20 +4,48 @@ import pickle
 
 def SearchUsingTrailer(signatures,driveLetter):
     #drive = openDrive()
+    headtemp = signatures[0]
+    header = [headtemp[i:i+1] for i in range(len(headtemp))]
+    trailtemp = signatures[1]
+    trailer =  [trailtemp[i:i+1] for i in range(len(trailtemp))]
 
-    print(signatures)
+    print(header[-1])
+    print(trailer)
+
     nCtr = 0
     nMax = 10000000
-    cur = '0'
-    prev = '0'
     sector = 512
-    startSplice = 0
-    endSplice = 1
     MaxSize = 10000000
+    index = 0
+    found = False
+    pHead = '0'
     with open("\\\\.\\"+driveLetter+":", 'rb') as drive:
+        print("Opened Drive: " + driveLetter)
         while nCtr < nMax:
+            #print(pHead, end="")
+            #print(header[index])
             drive.seek(nCtr * sector)
-            #print("Error reading files")
+            pHead = cur = drive.read(1)
+            while cur == header[index]:
+                if header[-1] == cur:
+                    print("Found a file!", nCtr)
+                    found = True
+                    break
+
+                cur = drive.read(1)
+                index+=1
+
+            if found:
+                #implement write to file
+                pass
+
+            index = 0
+            nCtr += 1
+
+
+
+
+
 
 
 
@@ -51,7 +79,7 @@ def main():
     driveLetter = driveLetter.upper()
     for i in choices:
         if i in headers:
-            SearchUsingTrailer(headers.get(i))
+            SearchUsingTrailer(headers.get(i), driveLetter)
         else:
             print("Sorry file is not supported.")
 
