@@ -2,52 +2,79 @@ import threading
 import os
 import pickle
 
-def SearchUsingTrailer(signatures,driveLetter):
+def SearchUsingTrailer(signatures,driveLetter,fileType):
     #drive = openDrive()
     headtemp = signatures[0]
     header = [headtemp[i:i+1] for i in range(len(headtemp))]
     trailtemp = signatures[1]
     trailer =  [trailtemp[i:i+1] for i in range(len(trailtemp))]
-
     print(header[-1])
     print(trailer)
-
     nCtr = 0
+    fileCtr = 0
     nMax = 10000000
     sector = 512
-    MaxSize = 10000000
+    maxSize = 10000000
     index = 0
     found = False
     pHead = '0'
+    trailIndex = 0
+    done = False
     with open("\\\\.\\"+driveLetter+":", 'rb') as drive:
+        print(nCtr)
         print("Opened Drive: " + driveLetter)
         while nCtr < nMax:
             #print(pHead, end="")
             #print(header[index])
             drive.seek(nCtr * sector)
             pHead = cur = drive.read(1)
+            cur = pHead
             while cur == header[index]:
-                if header[-1] == cur:
-                    print("Found a file!", nCtr)
+                #print(cur, end="")
+                #print(header[index])
+                if cur == header[-1] and index == len(header)-1: #if current is equal to the last byte of the passed header
+                    print("Found a potential file!")
+                    print(cur, end="")
+                    print(header[-1])
                     found = True
                     break
-
                 cur = drive.read(1)
                 index+=1
 
             if found:
-                #implement write to file
-                pass
+                fileCtr += 1
+                newFile = open("recovered\\"+str(fileCtr)+"."+fileType,"wb")
+                curSize = 0
+                trailIndex = 0
+                foundTrailer = False
+                while done == False and curSize < maxSize:
+                    newFile.write(pHead)
 
+                    while pHead == trailer[trailIndex]:
+                        #implement writing with trail checker
+                #    print(cur, end="")
+                #    print(trailer[trailIndex])
+                    # if pHead == trailer[-1]:
+                    #     done = True
+                    #     found = False
+                    #     print(pHead, end="")
+                    #     print(trailer[-1])
+                    #     print("Done Saving!")
+                    #     break
+                    # if pHead == trailer[trailIndex]:
+                    #     trailIndex += 1
+                    pHead = drive.read(1)
+                    curSize += 1
+                    trailIndex = 0
+
+                newFile.close()
+                if curSize >= maxSize:
+                    print("False positive")
+                #implement write to file
+            trailIndex = 0
             index = 0
             nCtr += 1
-
-
-
-
-
-
-
+            found = False
 
 def main():
     headers = {'jpg': [b'\xFF\xD8',b'\xFF\xD9'],
@@ -79,7 +106,7 @@ def main():
     driveLetter = driveLetter.upper()
     for i in choices:
         if i in headers:
-            SearchUsingTrailer(headers.get(i), driveLetter)
+            SearchUsingTrailer(headers.get(i), driveLetter, i)
         else:
             print("Sorry file is not supported.")
 
