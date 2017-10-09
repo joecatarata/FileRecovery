@@ -1,4 +1,6 @@
 import tkinter
+
 top = tkinter.Tk()
-# Code to add widgets will go here...
+top.wm_title("File Recovery Software")
 top.mainloop()
+top.resizable(width="False", height="False")
