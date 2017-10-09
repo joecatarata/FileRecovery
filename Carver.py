@@ -68,6 +68,13 @@ def SearchUsingTrailer(signatures,driveLetter,fileType):
                         pHead = drive.read(1)
                         curSize += 1
                         trailIndex = 0
+
+                if fileType == 'docx' or fileType == 'pptx' or fileType == 'xlsx':
+                    i = 0
+                    while i < 18:
+                        pHead = drive.read(1)
+                        newFile.write(pHead)
+                        i += 1
                 newFile.close()
                 if curSize >= maxSize:
                     print("False positive")
@@ -80,7 +87,9 @@ def SearchUsingTrailer(signatures,driveLetter,fileType):
 def main():
     headers = {'jpg': [b'\xFF\xD8',b'\xFF\xD9'],
                'pdf': [b'\x25\x50', b'\x0A\x25\x25\x45\x4F\x46'],
-               'docx': [b'\x50\x4B\x03\x04\x14\x00\x06\x00', b'\x50\x4B\x05\x06']}
+               'docx': [b'\x50\x4B\x03\x04\x14\x00\x06\x00', b'\x50\x4B\x05\x06'],
+               'xlsx': [b'\x50\x4B\x03\x04\x14\x00\x06\x00', b'\x50\x4B\x05\x06'],
+               'png': [b'\x89\x50\x4E\x47\x0D\x0A\x1A\x0A', b'\x49\x45\x4E\x44\xAE\x42\x60\x82']}
     filename = 'headers'
     file = open(filename, 'wb')
     pickle.dump(headers, file)
