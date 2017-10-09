@@ -8,7 +8,7 @@ def SearchUsingTrailer(signatures,driveLetter,fileType):
     header = [headtemp[i:i+1] for i in range(len(headtemp))]
     trailtemp = signatures[1]
     trailer =  [trailtemp[i:i+1] for i in range(len(trailtemp))]
-    print(header[-1])
+    print(header)
     print(trailer)
     nCtr = 0
     fileCtr = 0
@@ -30,8 +30,6 @@ def SearchUsingTrailer(signatures,driveLetter,fileType):
             pHead = cur = drive.read(1)
             cur = pHead
             while cur == header[index]:
-                #print(cur, end="")
-                #print(header[index])
                 if cur == header[-1] and index == len(header)-1: #if current is equal to the last byte of the passed header
                     print("Found a potential file!")
                     print(cur, end="")
@@ -47,26 +45,29 @@ def SearchUsingTrailer(signatures,driveLetter,fileType):
                 curSize = 0
                 trailIndex = 0
                 foundTrailer = False
+                done = False
+                cur = pHead
+                for i in header:
+                    newFile.write(i)
+                pHead = drive.read(1)
+                done = False
                 while done == False and curSize < maxSize:
-                    newFile.write(pHead)
-
-                    while pHead == trailer[trailIndex]:
-                        #implement writing with trail checker
-                #    print(cur, end="")
-                #    print(trailer[trailIndex])
-                    # if pHead == trailer[-1]:
-                    #     done = True
-                    #     found = False
-                    #     print(pHead, end="")
-                    #     print(trailer[-1])
-                    #     print("Done Saving!")
-                    #     break
-                    # if pHead == trailer[trailIndex]:
-                    #     trailIndex += 1
-                    pHead = drive.read(1)
-                    curSize += 1
                     trailIndex = 0
-
+                    newFile.write(pHead)
+                    while pHead == trailer[trailIndex]:
+                        if pHead == trailer[-1] and trailIndex == len(trailer)-1:
+                            print("Pumasok")
+                            done = True
+                            break
+                        pHead = drive.read(1)
+                        newFile.write(pHead)
+                        trailIndex += 1
+                        curSize += 1
+                    #    print(trailIndex, end="")
+                    if not done:
+                        pHead = drive.read(1)
+                        curSize += 1
+                        trailIndex = 0
                 newFile.close()
                 if curSize >= maxSize:
                     print("False positive")
@@ -83,6 +84,7 @@ def main():
     filename = 'headers'
     file = open(filename, 'wb')
     pickle.dump(headers, file)
+
     file = open(filename, 'rb')
     headers = pickle.load(file)
     choices = []
