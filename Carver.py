@@ -2,6 +2,11 @@ import threading
 import os
 import pickle
 
+def readAndWrite(image, drive):
+    byte = drive.read(1)
+    image.write(byte)
+    return byte
+
 def SearchUsingTrailer(signatures,driveLetter,fileType):
     #drive = openDrive()
     headtemp = signatures[0]
@@ -83,6 +88,80 @@ def SearchUsingTrailer(signatures,driveLetter,fileType):
             index = 0
             nCtr += 1
             found = False
+            
+def SearchWithoutTrailer(fileType,driveLetter):
+    
+    nCtr = 0
+    nMax = 10000000
+    prev = '0'
+    cur = '0'
+    sector = 512 
+    imagectr = 0 
+
+    docMaxSize = 100000000
+    running = False
+    print(fileType)
+    with open("\\\\.\\"+driveLetter+":", 'rb') as drive:
+        print(nCtr)
+        print("Opened Drive: " + driveLetter)
+        
+        while nCtr < nMax:
+            try:
+                drive.seek(nCtr * sector)
+                cur = reader = drive.read(1) 
+                if cur == b'\xD0':
+                    nextbyte = drive.read(1)
+                    if nextbyte == b'\xCF':
+                        nextbyte = drive.read(1)
+                        if nextbyte == b'\x11':
+                            nextbyte = drive.read(1)
+                            if nextbyte == b'\xE0':
+                                nextbyte = drive.read(1)
+                                if nextbyte == b'\xA1':
+                                    nextbyte = drive.read(1)
+                                    if nextbyte == b'\xB1':
+                                        nextbyte = drive.read(1)
+                                        if nextbyte == b'\x1A':
+                                            nextbyte = drive.read(1)
+                                            if nextbyte == b'\xE1':
+                                                print("FOUND "+ fileType +" - ", nCtr)
+                                                imagectr += 1
+                                                image = open("recovered\\" + str(imagectr) + "."+fileType,"wb")
+                                                running = True
+                                                image.write(b'\xD0')
+                                                image.write(b'\xCF')
+                                                image.write(b'\x11')
+                                                image.write(b'\xE0')
+                                                image.write(b'\xA1')
+                                                image.write(b'\xB1')
+                                                image.write(b'\x1A')
+                                                image.write(b'\xE1')
+                                                mCtr = 0
+                                                while running and mCtr < docMaxSize:
+                                                    cur = readAndWrite(image, drive)
+                                                    
+                                                    ###########FIX######################
+                                                    i = 0
+                                                    while i < 1000000:
+                                                        cur = readAndWrite(image, drive)
+                                                        i += 1
+                                                    ######################################
+                                                    
+                                                    running = False
+                                                    image.close()
+                                                    print(fileType+" Saved")
+
+                                                    mCtr += 1
+                                                if mCtr >= maxSize:
+                                                    image.close()
+                                                    print(fileType+" Saved - failed")
+
+            except:
+                pass
+            nCtr += 1
+
+    
+    
 
 def main():
     headers = {'jpg': [b'\xFF\xD8',b'\xFF\xD9'],
@@ -104,6 +183,9 @@ def main():
         print("jpg")
         print("pdf")
         print("docx")
+        print("xlsx")
+        print("doc")
+        print("xls")
         choice = (input("Enter choice(type the file type): "))
 
         choices.append(choice)
@@ -113,12 +195,14 @@ def main():
             continue
         else:
             break
-
+            
     driveLetter = input("Enter letter of drive to scan: ")
     driveLetter = driveLetter.upper()
     for i in choices:
         if i in headers:
             SearchUsingTrailer(headers.get(i), driveLetter, i)
+        elif i == "doc" or i == "xls":
+            SearchWithoutTrailer(i,driveLetter)
         else:
             print("Sorry file is not supported.")
 
