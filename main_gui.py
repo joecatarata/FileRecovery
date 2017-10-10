@@ -6,8 +6,11 @@ class Application(Frame):
         print ("hi there, everyone!")
 
     def createWidgets(self):
+        self.upperdiv = LabelFrame(self)
+        self.upperdiv.pack()
+        
         self.filetypes = LabelFrame(self, text="File Types" )
-        self.filetypes.grid(column=1, row=1,sticky=E+W, padx=15)
+        self.filetypes.grid(in_=self.upperdiv,column=1, row=1,sticky=E+W, padx=15)
         
         self.jpg  = Checkbutton(self, text="jpg",  variable=1).grid(in_=self.filetypes, sticky=W, column=1, row=1)
         
@@ -23,6 +26,8 @@ class Application(Frame):
         #self.xls.grid(column=6, row=1, sticky=W)
         
         
+        self.drives = LabelFrame(self, text="Drive")
+        self.drives.grid(in_=self.upperdiv,column=2, row=1,sticky=E+W, padx=15)
         
         #gets the current available drives
         drives = win32api.GetLogicalDriveStrings()
@@ -31,15 +36,24 @@ class Application(Frame):
         
         variable = StringVar(self)
         variable.set(the_drives[0])
-        
         self.dropdown = OptionMenu(self, variable, *the_drives)
-        self.dropdown.grid(column=2, row=1, sticky=E+W)
+        self.dropdown.grid(in_=self.drives, column=1, row=1, sticky=E+W, padx=15)
         
         self.hi_there = Button(self)
-        self.hi_there["text"] = "ok",
+        self.hi_there["text"] = "Start"
         self.hi_there["command"] = self.do_something
-
-        #self.hi_there.grid(column=3, row=4, sticky=W)
+        self.hi_there.grid(in_=self.drives, column=1, row=2, sticky=E+W, padx=16, pady=5)
+        
+        self.filesdiv = LabelFrame(self, text="Scanned Files" )
+        self.filesdiv.pack(fill=BOTH, expand="yes")
+        
+        Label(self, text="FILES").grid(in_=self.filesdiv, column=1,row=1, padx=220, pady=150)
+        
+        self.progressbar = LabelFrame(self, text="Progress")
+        self.progressbar.pack(fill=X)
+        
+        self.loading = Label(self, text="100%")
+        self.loading.grid(in_=self.progressbar, column=1,row=1)
     
     def center(self,toplevel):
         toplevel.update_idletasks()
@@ -53,11 +67,11 @@ class Application(Frame):
     #master is tk
     def __init__(self, master=None):
         Frame.__init__(self, master)
-        self.grid() 
+        self.pack() 
         self.createWidgets() #Creates widgets for the Frame
         master.minsize(width=500, height=500) #sets the minimum frame size
         self.center(master) #sets the position of the frame to the center of the screen
-        master.wm_title("File Recovery Software")
+        #master.wm_title("File Recovery Software")
         
 
 root = Tk()
