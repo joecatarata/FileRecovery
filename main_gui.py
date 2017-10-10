@@ -71,7 +71,7 @@ class Application(Frame):
         self.createWidgets() #Creates widgets for the Frame
         master.minsize(width=500, height=500) #sets the minimum frame size
         self.center(master) #sets the position of the frame to the center of the screen
-        #master.wm_title("File Recovery Software")
+        master.wm_title("File Recovery Software")
         
 
 root = Tk()
