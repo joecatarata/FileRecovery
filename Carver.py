@@ -163,7 +163,7 @@ def SearchWithoutTrailer(fileType,driveLetter):
     
     
 
-def main():
+def carve(choices,driveLetter):
     headers = {'jpg': [b'\xFF\xD8',b'\xFF\xD9'],
                'pdf': [b'\x25\x50', b'\x0A\x25\x25\x45\x4F\x46'],
                'docx': [b'\x50\x4B\x03\x04\x14\x00\x06\x00', b'\x50\x4B\x05\x06'],
@@ -176,9 +176,9 @@ def main():
 
     file = open(filename, 'rb')
     headers = pickle.load(file)
-    choices = []
+    #choices = []
 
-    while True:
+    """while True:
         print("Choose which file types will you want to recover")
         print("jpg")
         print("pdf")
@@ -198,6 +198,9 @@ def main():
             
     driveLetter = input("Enter letter of drive to scan: ")
     driveLetter = driveLetter.upper()
+    """ 
+    
+    
     for i in choices:
         if i in headers:
             SearchUsingTrailer(headers.get(i), driveLetter, i)
@@ -206,9 +209,3 @@ def main():
         else:
             print("Sorry file is not supported.")
 
-
-
-
-
-if __name__ == "__main__":
-    main()

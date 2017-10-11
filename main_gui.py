@@ -1,9 +1,32 @@
 from tkinter import *
+from Carver import *
 import win32api
 
 class Application(Frame):
     def do_something(self):
-        print ("hi there, everyone!")
+        #print ("hi there, everyone!")
+        choices =[]
+        
+        if self.jpgvar.get() == 1:
+            choices.append("jpg")
+        if self.pdfvar.get() == 1:
+            choices.append("pdf")
+        if self.docxvar.get() == 1:
+            choices.append("docx")
+        if self.xlsxvar.get() == 1:
+            choices.append("xlsx")
+        if self.docvar.get() == 1:
+            choices.append("doc")
+        if self.xlsvar.get() == 1:
+            choices.append("xls")
+        
+        print(choices)
+        
+        driveLetter = self.variable.get()[0]
+        
+        
+        print(driveLetter)
+        carve(choices, driveLetter)
 
     def createWidgets(self):
         self.upperdiv = LabelFrame(self)
@@ -12,18 +35,30 @@ class Application(Frame):
         self.filetypes = LabelFrame(self, text="File Types" )
         self.filetypes.grid(in_=self.upperdiv,column=1, row=1,sticky=E+W, padx=15)
         
-        self.jpg  = Checkbutton(self, text="jpg",  variable=1).grid(in_=self.filetypes, sticky=W, column=1, row=1)
+        self.jpgvar = IntVar(self)
+        self.jpg  = Checkbutton(self, text="jpg",  variable=self.jpgvar)
+        self.jpg.grid(in_=self.filetypes, sticky=W, column=1, row=1)
         
-        self.pdf  = Checkbutton(self, text="pdf",  variable=2).grid(in_=self.filetypes, sticky=W, column=1, row=2)
+        self.pdfvar = IntVar(self)
+        self.pdf  = Checkbutton(self, text="pdf",  variable=self.pdfvar)
+        self.pdf.grid(in_=self.filetypes, sticky=W, column=1, row=2)
         
-        self.docx = Checkbutton(self, text="docx", variable=3).grid(in_=self.filetypes, sticky=W, column=2, row=1)
-        #self.docx.grid(column=3, row=1, sticky=W)
-        self.xlsx = Checkbutton(self, text="xlsx", variable=4).grid(in_=self.filetypes, sticky=W, column=2, row=2)
-        #self.xlsx.grid(column=4, row=1, sticky=W)
-        self.doc  = Checkbutton(self, text="doc",  variable=5).grid(in_=self.filetypes, sticky=W, column=3, row=1)
-        #self.doc.grid(column=5, row=1, sticky=W)
-        self.xls  = Checkbutton(self, text="xls",  variable=6).grid(in_=self.filetypes, sticky=W, column=3, row=2)
-        #self.xls.grid(column=6, row=1, sticky=W)
+        self.docxvar = IntVar(self)
+        self.docx = Checkbutton(self, text="docx", variable=self.docxvar)
+        self.docx.grid(in_=self.filetypes, sticky=W, column=2, row=1)
+        
+        self.xlsxvar = IntVar(self)
+        self.xlsx = Checkbutton(self, text="xlsx", variable=self.xlsxvar)
+        self.xlsx.grid(in_=self.filetypes, sticky=W, column=2, row=2)
+        
+        self.docvar = IntVar(self)
+        self.doc  = Checkbutton(self, text="doc",  variable=self.docvar)
+        self.doc.grid(in_=self.filetypes, sticky=W, column=3, row=1)
+        
+        self.xlsvar = IntVar(self)
+        self.xls  = Checkbutton(self, text="xls",  variable=self.xlsvar)
+        self.xls.grid(in_=self.filetypes, sticky=W, column=3, row=2)
+       
         
         
         self.drives = LabelFrame(self, text="Drive")
@@ -34,9 +69,9 @@ class Application(Frame):
         the_drives = drives.split('\000')[:-1]
         print(the_drives)
         
-        variable = StringVar(self)
-        variable.set(the_drives[0])
-        self.dropdown = OptionMenu(self, variable, *the_drives)
+        self.variable = StringVar(self)
+        self.variable.set(the_drives[0])
+        self.dropdown = OptionMenu(self, self.variable, *the_drives)
         self.dropdown.grid(in_=self.drives, column=1, row=1, sticky=E+W, padx=15)
         
         self.hi_there = Button(self)
