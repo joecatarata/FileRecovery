@@ -172,7 +172,7 @@ def SearchWithoutTrailer(fileType,driveLetter,startnum,endnum,threadnum):
     
     
 
-def carve(choices,driveLetter):
+def carve(choices,driveLetter, threadcount):
     headers = {'jpg': [b'\xFF\xD8',b'\xFF\xD9'],
                'pdf': [b'\x25\x50', b'\x0A\x25\x25\x45\x4F\x46'],
                'docx': [b'\x50\x4B\x03\x04\x14\x00\x06\x00', b'\x50\x4B\x05\x06'],
@@ -210,7 +210,7 @@ def carve(choices,driveLetter):
     """ 
     
     startnum = 0
-    loopcount = 1
+    loopcount = threadcount
     #Thread count
     basecount = 10000000 / loopcount
     endnum = int(basecount)
@@ -242,6 +242,6 @@ def carve(choices,driveLetter):
         
     print('Threads alive', threading.active_count())
     
-    for x in threads:
-        x.join()
+    """for x in threads:
+        x.join()"""
 
