@@ -226,12 +226,13 @@ def carve(choices,driveLetter, threadcount):
         for i in choices:
             if i in headers:
                 #SearchUsingTrailer(headers.get(i), driveLetter, i)
-                #FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
-                #threads.append(FUNC)
-                SearchUsingTrailer(headers.get(i), driveLetter, i,startnum, endnum,n+1,)
+                FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
+                threads.append(FUNC)
+
                 print ('start number is', startnum, ' end number is', endnum)
             elif i == "doc" or i == "xls":
                 #SearchWithoutTrailer(i,driveLetter)
+<<<<<<< HEAD
 <<<<<<< HEAD
                 FUNC = threading.Thread(target=SearchWithoutTrailer, args=(i,driveLetter,startnum, endnum,n+1,))
                 threads.append(FUNC)
@@ -241,6 +242,11 @@ def carve(choices,driveLetter, threadcount):
                 #threads.append(FUNC)
                 SearchWithoutTrailer(i,driveLetter,startnum, endnum,n+1,)
 >>>>>>> f185f22fb60ece1100a3d478ecfdb4af3c6ff91b
+=======
+                FUNC = threading.Thread(target=SearchWithoutTrailer, args=(i,driveLetter,startnum, endnum,n+1,))
+                threads.append(FUNC)
+                
+>>>>>>> parent of f185f22... commmented out threads
                 print ('start number is', startnum, ' end number is', endnum)
             else:
                 print("Sorry file is not supported.")
@@ -252,16 +258,25 @@ def carve(choices,driveLetter, threadcount):
     for x in threads:
 =======
         
+<<<<<<< HEAD
     """for x in threads:
 >>>>>>> f185f22fb60ece1100a3d478ecfdb4af3c6ff91b
+=======
+    for x in threads:
+>>>>>>> parent of f185f22... commmented out threads
         x.start()
 
     print('Threads alive', threading.active_count())
+<<<<<<< HEAD
 
     for x in threads:
 <<<<<<< HEAD
         x.join()
 =======
+=======
+    
+    """for x in threads:
+>>>>>>> parent of f185f22... commmented out threads
         x.join()"""
 
 >>>>>>> f185f22fb60ece1100a3d478ecfdb4af3c6ff91b
