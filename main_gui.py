@@ -1,10 +1,13 @@
 from tkinter import *
 from Carver import *
+from tkinter import ttk  
 import win32api
+import time
 
 class Application(Frame):
     def do_something(self):
         #print ("hi there, everyone!")
+        start_time = time.time()
         choices =[]
         
         if self.jpgvar.get() == 1:
@@ -27,6 +30,8 @@ class Application(Frame):
         
         print(driveLetter)
         carve(choices, driveLetter)
+        print("--- %s seconds ---" % (time.time() - start_time))
+        
 
     def createWidgets(self):
         self.upperdiv = LabelFrame(self)
@@ -60,7 +65,6 @@ class Application(Frame):
         self.xls.grid(in_=self.filetypes, sticky=W, column=3, row=2)
        
         
-        
         self.drives = LabelFrame(self, text="Drive")
         self.drives.grid(in_=self.upperdiv,column=2, row=1,sticky=E+W, padx=15)
         
@@ -79,16 +83,46 @@ class Application(Frame):
         self.hi_there["command"] = self.do_something
         self.hi_there.grid(in_=self.drives, column=1, row=2, sticky=E+W, padx=16, pady=5)
         
+        self.threads = LabelFrame(self, text="Threads")
+        self.threads.grid(in_=self.upperdiv,column=3, row=1,sticky=E+W, padx=15)
+        #Label(self.master, text="Thread Count:").grid(in_=self.threads, column=1, row=1, sticky=E+W)
+        self.threadEntry = Entry(self.master, bd=2, width=6)
+        self.threadEntry.grid(in_=self.threads, column=2, row=1, sticky=E+W, pady=5, padx=5)
+        
+        
         self.filesdiv = LabelFrame(self, text="Scanned Files" )
         self.filesdiv.pack(fill=BOTH, expand="yes")
         
-        Label(self, text="FILES").grid(in_=self.filesdiv, column=1,row=1, padx=220, pady=150)
+        #Label(self, text="FILES").grid(in_=self.filesdiv, column=1,row=1, padx=220, pady=150)
+        
+        tree = ttk.Treeview(self.master)
+        tree["columns"]=("Name","Size","Created Date","Status")
+        tree.column("#0", width=50)
+        tree.column("Name", width=100)
+        tree.column("Size", width=100)
+        tree.column("Created Date", width=100)
+        tree.column("Status", width=100)
+        tree.heading("Name", text="Name")
+        tree.heading("Size", text="Size")
+        tree.heading("Created Date", text="Created Date")
+        tree.heading("Status", text="Status")
+        tree.insert("" , 0,    text="1", values=("the name","the size","the date", "the status"))
+        
+        tree.grid(in_=self.filesdiv, column=1,row=1, padx=9, pady=5)
+        
+        
         
         self.progressbar = LabelFrame(self, text="Progress")
         self.progressbar.pack(fill=X)
         
         self.loading = Label(self, text="100%")
         self.loading.grid(in_=self.progressbar, column=1,row=1)
+        
+        self.timediv = LabelFrame(self, text="Time" )
+        self.timediv.pack(fill=BOTH, expand="yes")
+        
+        self.timeLabel = Label(text="")
+        self.timeLabel.grid(in_=self.timediv, column=1,row=1)
     
     def center(self,toplevel):
         toplevel.update_idletasks()
