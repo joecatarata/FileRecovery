@@ -8,6 +8,9 @@ def readAndWrite(image, drive):
     image.write(byte)
     return byte
 
+def finder():
+    pHead = '0'
+
 def SearchUsingTrailer(signatures,driveLetter,fileType,startnum,endnum,threadnum):
     headtemp = signatures[0]
     header = [headtemp[i:i+1] for i in range(len(headtemp))]
