@@ -221,15 +221,15 @@ def carve(choices,driveLetter, threadcount):
         for i in choices:
             if i in headers:
                 #SearchUsingTrailer(headers.get(i), driveLetter, i)
-                FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
-                threads.append(FUNC)
-
+                #FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
+                #threads.append(FUNC)
+                SearchUsingTrailer(headers.get(i), driveLetter, i,startnum, endnum,n+1,)
                 print ('start number is', startnum, ' end number is', endnum)
             elif i == "doc" or i == "xls":
                 #SearchWithoutTrailer(i,driveLetter)
-                FUNC = threading.Thread(target=SearchWithoutTrailer, args=(i,driveLetter,startnum, endnum,n+1,))
-                threads.append(FUNC)
-                
+                #FUNC = threading.Thread(target=SearchWithoutTrailer, args=(i,driveLetter,startnum, endnum,n+1,))
+                #threads.append(FUNC)
+                SearchWithoutTrailer(i,driveLetter,startnum, endnum,n+1,)
                 print ('start number is', startnum, ' end number is', endnum)
             else:
                 print("Sorry file is not supported.")
@@ -237,11 +237,11 @@ def carve(choices,driveLetter, threadcount):
         startnum += int(basecount)
         endnum += int(basecount)
         
-    for x in threads:
+    """for x in threads:
         x.start()
         
     print('Threads alive', threading.active_count())
     
-    """for x in threads:
+    for x in threads:
         x.join()"""
 
