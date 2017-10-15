@@ -22,6 +22,8 @@ class Application(Frame):
             choices.append("doc")
         if self.xlsvar.get() == 1:
             choices.append("xls")
+        if self.pngvar.get() == 1:
+            choices.append("png")
         
         print(choices)
         
@@ -29,7 +31,11 @@ class Application(Frame):
         
         
         print(driveLetter)
-        carve(choices, driveLetter)
+        
+        
+        threadcount = int(self.threadEntry.get())
+        print('threadcount: ', threadcount)
+        carve(choices, driveLetter, threadcount)
         print("--- %s seconds ---" % (time.time() - start_time))
         
 
@@ -63,6 +69,10 @@ class Application(Frame):
         self.xlsvar = IntVar(self)
         self.xls  = Checkbutton(self, text="xls",  variable=self.xlsvar)
         self.xls.grid(in_=self.filetypes, sticky=W, column=3, row=2)
+        
+        self.pngvar = IntVar(self)
+        self.png  = Checkbutton(self, text="png",  variable=self.pngvar)
+        self.png.grid(in_=self.filetypes, sticky=W, column=4, row=1)
        
         
         self.drives = LabelFrame(self, text="Drive")
@@ -88,6 +98,7 @@ class Application(Frame):
         #Label(self.master, text="Thread Count:").grid(in_=self.threads, column=1, row=1, sticky=E+W)
         self.threadEntry = Entry(self.master, bd=2, width=6)
         self.threadEntry.grid(in_=self.threads, column=2, row=1, sticky=E+W, pady=5, padx=5)
+        self.threadEntry.insert(0, "100")
         
         
         self.filesdiv = LabelFrame(self, text="Scanned Files" )

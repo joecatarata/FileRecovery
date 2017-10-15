@@ -177,7 +177,7 @@ def SearchWithoutTrailer(fileType,driveLetter,startnum,endnum,threadnum):
 
 
 
-def carve(choices,driveLetter):
+def carve(choices,driveLetter, threadcount):
     headers = {'jpg': [b'\xFF\xD8',b'\xFF\xD9'],
                'pdf': [b'\x25\x50', b'\x0A\x25\x25\x45\x4F\x46'],
                'docx': [b'\x50\x4B\x03\x04\x14\x00\x06\x00', b'\x50\x4B\x05\x06'],
@@ -215,7 +215,7 @@ def carve(choices,driveLetter):
     """
 
     startnum = 0
-    loopcount = 1
+    loopcount = threadcount
     #Thread count
     basecount = int(10000000 / loopcount)
     endnum = int(basecount)
@@ -226,26 +226,42 @@ def carve(choices,driveLetter):
         for i in choices:
             if i in headers:
                 #SearchUsingTrailer(headers.get(i), driveLetter, i)
-                FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
-                threads.append(FUNC)
-
+                #FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
+                #threads.append(FUNC)
+                SearchUsingTrailer(headers.get(i), driveLetter, i,startnum, endnum,n+1,)
                 print ('start number is', startnum, ' end number is', endnum)
             elif i == "doc" or i == "xls":
                 #SearchWithoutTrailer(i,driveLetter)
+<<<<<<< HEAD
                 FUNC = threading.Thread(target=SearchWithoutTrailer, args=(i,driveLetter,startnum, endnum,n+1,))
                 threads.append(FUNC)
 
+=======
+                #FUNC = threading.Thread(target=SearchWithoutTrailer, args=(i,driveLetter,startnum, endnum,n+1,))
+                #threads.append(FUNC)
+                SearchWithoutTrailer(i,driveLetter,startnum, endnum,n+1,)
+>>>>>>> f185f22fb60ece1100a3d478ecfdb4af3c6ff91b
                 print ('start number is', startnum, ' end number is', endnum)
             else:
                 print("Sorry file is not supported.")
         n+=1
         startnum += int(basecount)
         endnum += int(basecount)
+<<<<<<< HEAD
 
     for x in threads:
+=======
+        
+    """for x in threads:
+>>>>>>> f185f22fb60ece1100a3d478ecfdb4af3c6ff91b
         x.start()
 
     print('Threads alive', threading.active_count())
 
     for x in threads:
+<<<<<<< HEAD
         x.join()
+=======
+        x.join()"""
+
+>>>>>>> f185f22fb60ece1100a3d478ecfdb4af3c6ff91b
