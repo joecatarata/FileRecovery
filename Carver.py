@@ -2,12 +2,11 @@ import threading
 import os
 import pickle
 import time
+import asyncio
 
-def readAndWrite(image, drive):
-    byte = drive.read(1)
-    image.write(byte)
-    return byte
 
+def writeToFile():
+    
 def SearchUsingTrailer(signatures,driveLetter,fileType,startnum,endnum,threadnum):
     #drive = openDrive()
     global fileCtr
