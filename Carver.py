@@ -6,7 +6,7 @@ import asyncio
 
 
 def writeToFile():
-    
+    pass
 def SearchUsingTrailer(signatures,driveLetter,fileType,startnum,endnum,threadnum):
     #drive = openDrive()
     global fileCtr
