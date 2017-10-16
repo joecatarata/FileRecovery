@@ -10,7 +10,7 @@ def readAndWrite(image, drive):
 
 def SearchUsingTrailer(signatures,driveLetter,fileType,startnum,endnum,threadnum):
     #drive = openDrive()
-    time.sleep(0.5)
+    global fileCtr
     headtemp = signatures[0]
     header = [headtemp[i:i+1] for i in range(len(headtemp))]
     trailtemp = signatures[1]
@@ -18,7 +18,6 @@ def SearchUsingTrailer(signatures,driveLetter,fileType,startnum,endnum,threadnum
     print(header)
     print(trailer)
     nCtr = 0
-    fileCtr = 0
     nMax = 10000000
     sector = 512
     maxSize = 10000000
@@ -211,14 +210,14 @@ def carve(choices,driveLetter, threadcount):
     driveLetter = input("Enter letter of drive to scan: ")
     driveLetter = driveLetter.upper()
     """ 
-    
     startnum = 0
     loopcount = threadcount #100 default
     #Thread count
     basecount = 10000000 / loopcount
     endnum = int(basecount)
     threads = []
-    
+    global fileCtr
+    fileCtr = 0
     n=0
     
     drive = open("\\\\.\\"+driveLetter+":", 'rb')
@@ -227,10 +226,10 @@ def carve(choices,driveLetter, threadcount):
         for i in choices:
             if i in headers:
                 #SearchUsingTrailer(headers.get(i), driveLetter, i)
-                #FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
-                #threads.append(FUNC)
-                SearchUsingTrailer(headers.get(i), driveLetter, i,startnum, endnum,n+1,)
-                #FUNC.daemon = True
+                FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
+                threads.append(FUNC)
+                #SearchUsingTrailer(headers.get(i), driveLetter, i,startnum, endnum,n+1,)
+                FUNC.daemon = True
                 print ('start number is', startnum, ' end number is', endnum)
                 startnum += int(basecount)
                 endnum += int(basecount)
@@ -240,11 +239,11 @@ def carve(choices,driveLetter, threadcount):
         n+=1
         
         
-    """ for x in threads:
+    for x in threads:
         x.start()
         
     print('Threads alive', threading.active_count())
     
     for x in threads:
         x.join()
-    """
+    
