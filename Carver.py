@@ -1,14 +1,16 @@
 import threading
 import os
 import pickle
+import time
 
 def readAndWrite(image, drive):
     byte = drive.read(1)
     image.write(byte)
     return byte
 
-def SearchUsingTrailer(signatures,driveLetter,fileType):
+def SearchUsingTrailer(signatures,driveLetter,fileType,startnum,endnum,threadnum):
     #drive = openDrive()
+    time.sleep(0.5)
     headtemp = signatures[0]
     header = [headtemp[i:i+1] for i in range(len(headtemp))]
     trailtemp = signatures[1]
@@ -26,12 +28,13 @@ def SearchUsingTrailer(signatures,driveLetter,fileType):
     trailIndex = 0
     done = False
     with open("\\\\.\\"+driveLetter+":", 'rb') as drive:
-        print(nCtr)
-        print("Opened Drive: " + driveLetter)
-        while nCtr < nMax:
+        #print(nCtr)
+        #print("Opened Drive: " + driveLetter)
+        #while nCtr < nMax:
+        while startnum < endnum:
             #print(pHead, end="")
             #print(header[index])
-            drive.seek(nCtr * sector)
+            drive.seek(startnum * sector)
             pHead = cur = drive.read(1)
             cur = pHead
             while cur == header[index]:
@@ -86,10 +89,16 @@ def SearchUsingTrailer(signatures,driveLetter,fileType):
                 #implement write to file
             trailIndex = 0
             index = 0
-            nCtr += 1
+            startnum += 1
+            #if endnum == 1000000:
+                #print('currrent num',startnum, 'FIRST THREAD')
+            #else:
+                #print('currrent num',startnum)
             found = False
+    print('loop no. ',threadnum,' ended')
+    
             
-def SearchWithoutTrailer(fileType,driveLetter):
+def SearchWithoutTrailer(fileType,driveLetter,startnum,endnum,threadnum):
     
     nCtr = 0
     nMax = 10000000
@@ -102,12 +111,13 @@ def SearchWithoutTrailer(fileType,driveLetter):
     running = False
     print(fileType)
     with open("\\\\.\\"+driveLetter+":", 'rb') as drive:
-        print(nCtr)
+        print(startnum)
         print("Opened Drive: " + driveLetter)
         
-        while nCtr < nMax:
+        #while nCtr < nMax:
+        while startnum < endnum:
             try:
-                drive.seek(nCtr * sector)
+                drive.seek(startnum * sector)
                 cur = reader = drive.read(1) 
                 if cur == b'\xD0':
                     nextbyte = drive.read(1)
@@ -124,7 +134,7 @@ def SearchWithoutTrailer(fileType,driveLetter):
                                         if nextbyte == b'\x1A':
                                             nextbyte = drive.read(1)
                                             if nextbyte == b'\xE1':
-                                                print("FOUND "+ fileType +" - ", nCtr)
+                                                print("FOUND "+ fileType +" - ", startnum)
                                                 imagectr += 1
                                                 image = open("recovered\\" + str(imagectr) + "."+fileType,"wb")
                                                 running = True
@@ -158,7 +168,9 @@ def SearchWithoutTrailer(fileType,driveLetter):
 
             except:
                 pass
-            nCtr += 1
+            startnum += 1
+            #print('currrent num',startnum)
+    print('loop no. ',threadnum,' ended')
 
     
     
@@ -200,15 +212,17 @@ def carve(choices,driveLetter, threadcount):
     driveLetter = driveLetter.upper()
     """ 
     
-<<<<<<< HEAD
     startnum = 0
-    loopcount = threadcount
+    loopcount = threadcount #100 default
     #Thread count
     basecount = 10000000 / loopcount
     endnum = int(basecount)
     threads = []
     
     n=0
+    
+    drive = open("\\\\.\\"+driveLetter+":", 'rb')
+    
     while n < loopcount:
         for i in choices:
             if i in headers:
@@ -216,34 +230,21 @@ def carve(choices,driveLetter, threadcount):
                 #FUNC = threading.Thread(target=SearchUsingTrailer, args=(headers.get(i), driveLetter, i,startnum, endnum,n+1,))
                 #threads.append(FUNC)
                 SearchUsingTrailer(headers.get(i), driveLetter, i,startnum, endnum,n+1,)
+                #FUNC.daemon = True
                 print ('start number is', startnum, ' end number is', endnum)
-            elif i == "doc" or i == "xls":
-                #SearchWithoutTrailer(i,driveLetter)
-                #FUNC = threading.Thread(target=SearchWithoutTrailer, args=(i,driveLetter,startnum, endnum,n+1,))
-                #threads.append(FUNC)
-                SearchWithoutTrailer(i,driveLetter,startnum, endnum,n+1,)
-                print ('start number is', startnum, ' end number is', endnum)
+                startnum += int(basecount)
+                endnum += int(basecount)
             else:
                 print("Sorry file is not supported.")
+            
         n+=1
-        startnum += int(basecount)
-        endnum += int(basecount)
         
-    """for x in threads:
+        
+    """ for x in threads:
         x.start()
         
     print('Threads alive', threading.active_count())
     
     for x in threads:
-        x.join()"""
-=======
-    
-    for i in choices:
-        if i in headers:
-            SearchUsingTrailer(headers.get(i), driveLetter, i)
-        elif i == "doc" or i == "xls":
-            SearchWithoutTrailer(i,driveLetter)
-        else:
-            print("Sorry file is not supported.")
->>>>>>> parent of b26dad5... recker
-
+        x.join()
+    """
